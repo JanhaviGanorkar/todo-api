@@ -1,15 +1,32 @@
-import React from 'react';
-import CreateTodo from './components/Createtodo/Createtodo'; // Import the CreateTodo component
-import RenderTodo from './components/Rendertodo/Rendertodo'; // Import the RenderTodo component
+import { useEffect, useState } from "react";
+import { getTodos } from "./api/todoapi";
+import Createtodo from "./components/Createtodo/Createtodo";
+import Rendertodo from "./components/Rendertodo/Rendertodo";
+function App() {
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
-export default function TodoApp() {
+  const fetchTodos = async () => {
+    const todos = await getTodos();
+  };
+
   return (
-    <div className="container mx-auto p-5 bg-slate-500">
-      <h1 className="text-3xl font-bold text-center mb-5">Todo Application</h1>
-      {/* CreateTodo for adding new todos */}
-      <CreateTodo />
-      {/* RenderTodo for displaying the list of todos */}
-      <RenderTodo />
-    </div>
+    <>
+      <div>
+        <div className="bg-[#172842] min-h-screen py-8">
+          <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
+            <h1 className="text-2xl font-bold text-center mb-8 mt-2">
+              Manage Your Todos
+            </h1>
+            <Createtodo />
+            <Rendertodo />
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </>
   );
 }
+
+export default App;

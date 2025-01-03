@@ -1,25 +1,45 @@
-import React, { useState, useContext } from 'react';
-import { TodoContext } from '../../contexts/ToDoContext'; // Import TodoContext
-import { Button } from '../ui/button'; // Import your Button component
-import 'boxicons';
+import React, { useState, useContext, useEffect } from "react";
+import { TodoContext } from "../../contexts/ToDoContext";
+import { Button } from "../ui/button";
 
 export default function CreateTodo() {
-  const { addTodo } = useContext(TodoContext); // Access addTodo from context
-  const [newTodo, setNewTodo] = useState(''); // State for new todo text
-  
+  const { todos, addTodo, selectedId, updateTodo } = useContext(TodoContext);
+  const [selectedTodo, setSelectedTodo] = useState(null);
+  const [newTodo, setNewTodo] = useState("");
+  useEffect(() => {
+    const foundTodo = todos.find((todo) => todo._id === selectedId);
+    setSelectedTodo(foundTodo || null);
+    if (foundTodo) setNewTodo(foundTodo.title);
+  }, [selectedId, selectedTodo]);
 
   const handleAddTodo = async () => {
-    if (newTodo.trim() !== '') {
+    if (newTodo.trim() !== "") {
       const newTodoItem = {
         title: newTodo,
         completed: false,
       };
+      try {
+        await addTodo(newTodoItem);
+        setNewTodo("");
+      } catch (error) {
+        console.error("Error adding todo:", error);
+      }
+    }
+  };
+
+  const handleUpdateTodo = async (id) => {
+    if (newTodo.trim() !== "") {
+      const updatedTodoItem = {
+        title: newTodo,
+        completed: selectedTodo.completed,
+      };
 
       try {
-        await addTodo(newTodoItem); // Send new todo to API
-        setNewTodo(''); // Clear input field after adding todo
+        await updateTodo(id, updatedTodoItem);
+        setNewTodo("");
+        setSelectedTodo(null);
       } catch (error) {
-        console.error('Error adding todo:', error);
+        console.error("Error updating todo:", error);
       }
     }
   };
@@ -30,16 +50,25 @@ export default function CreateTodo() {
         type="text"
         value={newTodo}
         onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Add a new todo"
+        placeholder={selectedTodo ? "Edit your todo" : "Add a new todo"}
         className="p-2 border rounded-md w-full bg-slate-600 mb-3"
       />
-      <Button
-        onClick={handleAddTodo}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-      >
-        Add Todo
-      </Button>
-      <box-icon name="plus-circle" color="blue"></box-icon>
+
+      {!selectedTodo ? (
+        <Button
+          onClick={handleAddTodo}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          Add Todo
+        </Button>
+      ) : (
+        <Button
+          onClick={() => handleUpdateTodo(selectedTodo._id)} // Pass the selected todo's ID
+          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+        >
+          Update Todo
+        </Button>
+      )}
     </div>
   );
 }
