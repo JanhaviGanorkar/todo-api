@@ -28,33 +28,37 @@ export default function RenderTodo() {
           {todos
             .filter((todo) => selectedId !== todo._id)
             .map((todo) => (
-              <li
-                key={todo._id}
-                className={`flex justify-between items-center p-3 rounded-lg ${
-                  todo.completed ? "bg-green-100" : "bg-gray-700"
-                }`}
-              >
-                <span
-                  onClick={() => toggleTodo(todo._id)} // Correct ID toggle ke liye use kare
-                  className={`cursor-pointer text-lg ${
-                    todo.completed ? "line-through text-gray-500" : "text-black"
+              <React.Fragment key={todo._id}>
+                <li
+                  key={todo._id}
+                  className={`flex justify-between items-center p-3 rounded-lg ${
+                    todo.completed ? "bg-green-100" : "bg-gray-700"
                   }`}
                 >
-                  {todo.title}
-                </span>
-                <Button
-                  onClick={() => setSelectedId(todo._id)}
-                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md"
-                >
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => deleteTodo(todo._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md"
-                >
-                  Delete
-                </Button>
-              </li>
+                  <span
+                    onClick={() => toggleTodo(todo._id)} // Correct ID toggle ke liye use kare
+                    className={`cursor-pointer text-lg ${
+                      todo.completed
+                        ? "line-through text-gray-500"
+                        : "text-black"
+                    }`}
+                  >
+                    {todo.title}
+                  </span>
+                  <Button
+                    onClick={() => setSelectedId(todo._id)}
+                    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => deleteTodo(todo._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md"
+                  >
+                    Delete
+                  </Button>
+                </li>
+              </React.Fragment>
             ))}
         </ul>
       )}

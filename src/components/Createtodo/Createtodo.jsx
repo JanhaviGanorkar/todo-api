@@ -3,7 +3,8 @@ import { TodoContext } from "../../contexts/ToDoContext";
 import { Button } from "../ui/button";
 
 export default function CreateTodo() {
-  const { todos, addTodo, selectedId, updateTodo } = useContext(TodoContext);
+  const { todos, addTodo, selectedId, setSelectedId, updateTodo } =
+    useContext(TodoContext);
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [newTodo, setNewTodo] = useState("");
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function CreateTodo() {
       try {
         await updateTodo(id, updatedTodoItem);
         setNewTodo("");
+        setSelectedId(null);
         setSelectedTodo(null);
       } catch (error) {
         console.error("Error updating todo:", error);
@@ -48,7 +50,7 @@ export default function CreateTodo() {
     <div className="container bg-gray-800 p-5 rounded-md shadow-md">
       <input
         type="text"
-        value={newTodo}
+        value={newTodo.length > 0 ? newTodo : ""}
         onChange={(e) => setNewTodo(e.target.value)}
         placeholder={selectedTodo ? "Edit your todo" : "Add a new todo"}
         className="p-2 border rounded-md w-full bg-slate-600 mb-3"
